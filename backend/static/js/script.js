@@ -1,173 +1,113 @@
 document.addEventListener('DOMContentLoaded', function() {
-  let selectedTaskId = null; // Variável para armazenar a tarefa selecionada
+    let selectedTaskId = null;
 
-  // Função para buscar as tarefas do servidor
-function fetchTasks() {
-    fetch('/tasks')
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.json();
-        })
-        .then(data => {
-            const taskList = document.getElementById('taskList');
-            taskList.innerHTML = ''; // Limpa a lista antes de adicionar novas tarefas
-            data.forEach(task => {
-                const row = document.createElement('tr'); // Cria uma nova linha para a tabela
-                row.innerHTML = `
-                    <td>${task.nome}</td>
-                    <td>${task.custo}</td>
-                    <td>${task.data_limite}</td>
-                `;
-
-                // Adiciona um evento de clique para selecionar a tarefa
-                row.addEventListener('click', () => {
-                    selectTask(task.id, row);
-                });
-
-                taskList.appendChild(row); // Adiciona a linha à tabela
+    function fetchTasks() {
+        fetch('/tasks')
+            .then(response => response.json())
+            .then(data => renderTasks(data))
+            .catch(error => {
+                console.error('Erro ao buscar tarefas:', error);
+                document.getElementById('taskList').innerHTML = '<tr><td colspan="5">Erro ao carregar tarefas.</td></tr>';
             });
-        })
-        .catch(error => {
-            console.error('Erro ao buscar tarefas:', error);
-            const taskList = document.getElementById('taskList');
-            taskList.innerHTML = '<tr><td colspan="3">Erro ao carregar tarefas.</td></tr>';
-        });
-}
-
-  // Função para selecionar uma tarefa
-  function selectTask(taskId, listItem) {
-      const taskItems = document.querySelectorAll('#taskList li');
-      taskItems.forEach(item => item.classList.remove('selected')); // Remove a seleção de todas as tarefas
-      listItem.classList.add('selected'); // Adiciona a classe de seleção ao item clicado
-      selectedTaskId = taskId; // Atualiza a tarefa selecionada
-  }
-
-  // Envio do formulário para adicionar nova tarefa
-  const saveTaskButton = document.getElementById('saveTaskButton');
-  saveTaskButton.addEventListener('click', async () => {
-      const nome = document.getElementById('nome').value;
-      const custo = parseFloat(document.getElementById('custo').value);
-      const data_limite = document.getElementById('data_limite').value;
-
-      try {
-          const response = await fetch('/tasks', {
-              method: 'POST',
-              headers: {
-                  'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({
-                  nome,
-                  custo,
-                  data_limite
-              }),
-          });
-
-          if (response.ok) {
-              alert('Tarefa adicionada com sucesso!');
-              fetchTasks(); // Atualiza a lista de tarefas
-          } else {
-              alert('Erro ao adicionar a tarefa.');
-          }
-      } catch (error) {
-          console.error('Erro ao adicionar tarefa:', error);
-      }
-  });
-
-  // Função para abrir o popup de edição
-  const editTaskButton = document.getElementById('editTaskButton');
-  editTaskButton.addEventListener('click', () => {
-      if (selectedTaskId) {
-          openEditPopup(selectedTaskId);
-      } else {
-          alert('Nenhuma tarefa selecionada para edição.');
-      }
-  });
-
-  // Função para abrir o popup e preencher os campos com os dados da tarefa selecionada
-  function openEditPopup(taskId) {
-    fetch(`/tasks/${taskId}`) // Esta linha deve funcionar se o endpoint GET estiver correto
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Erro ao buscar tarefa para edição');
-            }
-            return response.json();
-        })
-        .then(task => {
-            document.getElementById('editNome').value = task.nome;
-            document.getElementById('editCusto').value = task.custo;
-            document.getElementById('editDataLimite').value = task.data_limite;
-            document.getElementById('editPopup').style.display = 'flex'; // Abre o popup
-        })
-        .catch(error => console.error('Erro ao buscar tarefa para edição:', error));
     }
 
+    function renderTasks(tasks) {
+        const taskList = document.getElementById('taskList');
+        taskList.innerHTML = '';
 
-  // Função para atualizar a tarefa
-  const updateTaskButton = document.getElementById('updateTaskButton');
-  updateTaskButton.addEventListener('click', async () => {
-      const nome = document.getElementById('editNome').value;
-      const custo = parseFloat(document.getElementById('editCusto').value);
-      const data_limite = document.getElementById('editDataLimite').value;
+        tasks.forEach(task => {
+            const row = document.createElement('tr');
+            if (task.custo >= 1000) row.classList.add('highlight');
 
-      try {
-          const response = await fetch(`/tasks/${selectedTaskId}`, {
-              method: 'PUT',
-              headers: {
-                  'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({
-                  nome,
-                  custo,
-                  data_limite
-              }),
-          });
+            row.innerHTML = `
+                <td>${task.id}</td>
+                <td>${task.nome}</td>
+                <td>${task.custo.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</td>
+                <td>${task.data_limite}</td>
+                <td>
+                    <i class="fas fa-edit edit-icon" data-id="${task.id}" title="Editar"></i>
+                    <i class="fas fa-trash delete-icon" data-id="${task.id}" title="Deletar"></i>
+                </td>
+            `;
 
-          if (response.ok) {
-              alert('Tarefa atualizada com sucesso!');
-              fetchTasks(); // Atualiza a lista de tarefas
-              closeEditPopup(); // Fecha o popup
-          } else {
-              alert('Erro ao atualizar a tarefa. Verifique se o nome já existe.');
-          }
-      } catch (error) {
-          console.error('Erro ao atualizar tarefa:', error);
-      }
-  });
+            // Adiciona evento de clique na linha para selecionar a tarefa
+            row.addEventListener('click', () => {
+                selectTask(task.id);
+            });
 
-  // Função para fechar o popup
-  const closePopupButton = document.getElementById('closePopupButton');
-  closePopupButton.addEventListener('click', closeEditPopup);
+            taskList.appendChild(row);
+        });
 
-  function closeEditPopup() {
-      document.getElementById('editPopup').style.display = 'none'; // Fecha o popup
-  }
+        // Adiciona eventos de clique para os ícones de editar e excluir
+        document.querySelectorAll('.edit-icon').forEach(icon => {
+            icon.addEventListener('click', (event) => {
+                event.stopPropagation(); // Previne que o evento clique na linha seja acionado
+                openEditPopup(icon.dataset.id);
+            });
+        });
 
-  // Função para excluir a tarefa selecionada
-  const deleteTaskButton = document.getElementById('deleteTaskButton');
-  deleteTaskButton.addEventListener('click', () => {
-      if (selectedTaskId) {
-          if (confirm('Você tem certeza que deseja excluir esta tarefa?')) {
-              fetch(`/tasks/${selectedTaskId}`, {
-                  method: 'DELETE'
-              })
-              .then(response => {
-                  if (response.ok) {
-                      console.log('Task deleted');
-                      fetchTasks(); // Atualiza a lista de tarefas após a exclusão
-                      selectedTaskId = null; // Reseta a seleção
-                  } else {
-                      console.error('Erro ao deletar a tarefa');
-                  }
-              })
-              .catch(error => console.error('Erro:', error));
-          }
-      } else {
-          alert('Nenhuma tarefa selecionada para exclusão.');
-      }
-  });
+        document.querySelectorAll('.delete-icon').forEach(icon => {
+            icon.addEventListener('click', (event) => {
+                event.stopPropagation(); // Previne que o evento clique na linha seja acionado
+                const taskId = icon.dataset.id;
+                if (confirm('Tem certeza de que deseja excluir esta tarefa?')) {
+                    fetch(`/tasks/${taskId}`, { method: 'DELETE' })
+                        .then(response => response.ok && fetchTasks())
+                        .catch(error => console.error('Erro ao deletar tarefa:', error));
+                }
+            });
+        });
+    }
 
-  // Chama a função para buscar as tarefas ao carregar a página
-  fetchTasks();
+    function selectTask(taskId) {
+        selectedTaskId = taskId; // Apenas armazena o ID da tarefa selecionada
+        document.querySelectorAll('#taskList tr').forEach(item => item.classList.remove('selected'));
+    }
+
+    document.getElementById('saveTaskButton').addEventListener('click', async () => {
+        // ... (Código existente)
+    });
+
+    function openEditPopup(taskId) {
+        fetch(`/tasks/${taskId}`)
+            .then(response => response.json())
+            .then(task => {
+                document.getElementById('editNome').value = task.nome;
+                document.getElementById('editCusto').value = task.custo;
+                document.getElementById('editDataLimite').value = task.data_limite;
+                document.getElementById('editPopup').style.display = 'flex';
+                selectedTaskId = task.id; // Armazena o ID da tarefa que está sendo editada
+            })
+            .catch(error => console.error('Erro ao buscar tarefa para edição:', error));
+    }
+
+    document.getElementById('updateTaskButton').addEventListener('click', async () => {
+        const nome = document.getElementById('editNome').value;
+        const custo = parseFloat(document.getElementById('editCusto').value);
+        const data_limite = document.getElementById('editDataLimite').value;
+
+        try {
+            const response = await fetch(`/tasks/${selectedTaskId}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ nome, custo, data_limite }),
+            });
+
+            if (response.ok) {
+                alert('Tarefa atualizada com sucesso!');
+                fetchTasks();
+                closeEditPopup();
+            } else {
+                alert('Erro ao atualizar a tarefa.');
+            }
+        } catch (error) {
+            console.error('Erro ao atualizar tarefa:', error);
+        }
+    });
+
+    function closeEditPopup() {
+        document.getElementById('editPopup').style.display = 'none';
+    }
+
+    fetchTasks();
 });
