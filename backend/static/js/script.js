@@ -87,16 +87,22 @@ function fetchTasks() {
 
   // Função para abrir o popup e preencher os campos com os dados da tarefa selecionada
   function openEditPopup(taskId) {
-      fetch(`/tasks/${taskId}`)
-          .then(response => response.json())
-          .then(task => {
-              document.getElementById('editNome').value = task.nome;
-              document.getElementById('editCusto').value = task.custo;
-              document.getElementById('editDataLimite').value = task.data_limite;
-              document.getElementById('editPopup').style.display = 'flex'; // Abre o popup
-          })
-          .catch(error => console.error('Erro ao buscar tarefa para edição:', error));
-  }
+    fetch(`/tasks/${taskId}`) // Esta linha deve funcionar se o endpoint GET estiver correto
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Erro ao buscar tarefa para edição');
+            }
+            return response.json();
+        })
+        .then(task => {
+            document.getElementById('editNome').value = task.nome;
+            document.getElementById('editCusto').value = task.custo;
+            document.getElementById('editDataLimite').value = task.data_limite;
+            document.getElementById('editPopup').style.display = 'flex'; // Abre o popup
+        })
+        .catch(error => console.error('Erro ao buscar tarefa para edição:', error));
+    }
+
 
   // Função para atualizar a tarefa
   const updateTaskButton = document.getElementById('updateTaskButton');

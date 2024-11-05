@@ -37,32 +37,33 @@ class Task(db.Model):
 def index():
     return render_template('index.html')
 
-# Rota para obter tarefas
+# Rota para obter todas as tarefas
 @app.route('/tasks', methods=['GET'])
 def get_tasks():
     tasks = Task.query.all()
     return jsonify([task.to_dict() for task in tasks])
+
+# Rota para obter uma tarefa específica pelo ID
+@app.route('/tasks/<int:task_id>', methods=['GET'])
+def get_task(task_id):
+    task = Task.query.get_or_404(task_id)
+    return jsonify(task.to_dict())
 
 # Rota para adicionar uma nova tarefa
 @app.route('/tasks', methods=['POST'])
 def add_task():
     data = request.json
     try:
-        # Conversão da data de string para objeto datetime
         data_limite = datetime.strptime(data['data_limite'], '%Y-%m-%d')
-
-        # Obtenção do valor máximo atual de 'ordem' e incremento
         max_ordem = db.session.query(func.max(Task.ordem)).scalar()
-        nova_ordem = (max_ordem or 0) + 1  # Define nova ordem como 1 maior que o valor atual
-
-        # Criação da nova tarefa com o valor único de 'ordem'
+        nova_ordem = (max_ordem or 0) + 1  # Incrementa a ordem
         new_task = Task(nome=data['nome'], custo=data['custo'], data_limite=data_limite, ordem=nova_ordem)
         db.session.add(new_task)
         db.session.commit()
         return jsonify(new_task.to_dict()), 201
     except Exception as e:
         db.session.rollback()  # Reverte a sessão em caso de erro
-        print(f"Erro ao adicionar tarefa: {e}")  # Log do erro no terminal
+        print(f"Erro ao adicionar tarefa: {e}")
         return jsonify({'error': str(e)}), 500
 
 # Rota para editar uma tarefa
@@ -70,20 +71,18 @@ def add_task():
 def edit_task(task_id):
     task = Task.query.get_or_404(task_id)
     data = request.json
-    # Verifica se o novo nome já existe na base de dados
     if Task.query.filter(Task.nome == data['nome'], Task.id != task_id).first():
         return jsonify({'message': 'Esse nome de tarefa já existe. A edição não pode ser realizada.'}), 400
 
     try:
-        # Atualiza os campos da tarefa
         task.nome = data['nome']
         task.custo = data['custo']
         task.data_limite = datetime.strptime(data['data_limite'], '%Y-%m-%d')
         db.session.commit()
         return jsonify(task.to_dict())
     except Exception as e:
-        db.session.rollback()  # Reverte a sessão em caso de erro
-        print(f"Erro ao editar tarefa: {e}")  # Log do erro no terminal
+        db.session.rollback()
+        print(f"Erro ao editar tarefa: {e}")
         return jsonify({'error': str(e)}), 500
 
 # Rota para deletar uma tarefa
