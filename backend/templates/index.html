@@ -5,6 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/static/css/style.css">
     <title>Sistema de Tarefas</title>
+    <style>
+        .selected {
+            background-color: #e0e0e0; /* Cor de fundo para a tarefa selecionada */
+        }
+    </style>
 </head>
 <body>
     <h1>Sistema de Tarefas</h1>
@@ -13,8 +18,9 @@
         <input type="number" id="custo" placeholder="Custo" required>
         <input type="date" id="data_limite" required>
         <button id="saveTaskButton">Salvar Tarefa</button>
+        <button id="deleteTaskButton">Deletar Tarefa</button>
     </div>
-    <ul id="taskList"></ul>  <!-- ID corrigido aqui -->
+    <ul id="taskList"></ul> 
     <script src="/static/js/script.js"></script>
 </body>
 </html>
