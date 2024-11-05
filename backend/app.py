@@ -1,7 +1,6 @@
 from flask import Flask, jsonify, request, render_template
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
-from sqlalchemy import Column, Integer, String, Float, Date  # Importando tipos corretos do SQLAlchemy
 from datetime import datetime
 
 app = Flask(__name__)
@@ -15,12 +14,12 @@ db = SQLAlchemy(app)
 
 # Modelo de Tarefa
 class Task(db.Model):
-    __tablename__ = 'task'
+    __tablename__ = 'tarefa'
 
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column('idTarefa', db.Integer, primary_key=True)
     nome = db.Column(db.String(100), nullable=False)
-    custo = db.Column(db.Float, nullable=False) 
-    data_limite = db.Column(db.Date, nullable=False)
+    custo = db.Column(db.Float, nullable=False)
+    data_limite = db.Column('dataLimite', db.Date, nullable=False)
 
     def to_dict(self):
         return {
