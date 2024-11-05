@@ -1,5 +1,6 @@
 from flask import Flask, jsonify, request, render_template
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import func
 from flask_cors import CORS
 from datetime import datetime
 
@@ -20,13 +21,15 @@ class Task(db.Model):
     nome = db.Column(db.String(100), nullable=False)
     custo = db.Column(db.Float, nullable=False)
     data_limite = db.Column('dataLimite', db.Date, nullable=False)
+    ordem = db.Column(db.Integer, unique=True, nullable=False)  # Coluna de ordem única
 
     def to_dict(self):
         return {
             'id': self.id,
             'nome': self.nome,
             'custo': self.custo,
-            'data_limite': self.data_limite.strftime('%Y-%m-%d') if self.data_limite else None
+            'data_limite': self.data_limite.strftime('%Y-%m-%d') if self.data_limite else None,
+            'ordem': self.ordem
         }
 
 # Rota para a raiz
@@ -44,14 +47,22 @@ def get_tasks():
 @app.route('/tasks', methods=['POST'])
 def add_task():
     data = request.json
-    data_limite = datetime.strptime(data['data_limite'], '%Y-%m-%d')
-    new_task = Task(nome=data['nome'], custo=data['custo'], data_limite=data_limite)
     try:
+        # Conversão da data de string para objeto datetime
+        data_limite = datetime.strptime(data['data_limite'], '%Y-%m-%d')
+
+        # Obtenção do valor máximo atual de 'ordem' e incremento
+        max_ordem = db.session.query(func.max(Task.ordem)).scalar()
+        nova_ordem = (max_ordem or 0) + 1  # Define nova ordem como 1 maior que o valor atual
+
+        # Criação da nova tarefa com o valor único de 'ordem'
+        new_task = Task(nome=data['nome'], custo=data['custo'], data_limite=data_limite, ordem=nova_ordem)
         db.session.add(new_task)
         db.session.commit()
         return jsonify(new_task.to_dict()), 201
     except Exception as e:
         db.session.rollback()  # Reverte a sessão em caso de erro
+        print(f"Erro ao adicionar tarefa: {e}")  # Log do erro no terminal
         return jsonify({'error': str(e)}), 500
 
 # Rota para deletar uma tarefa
