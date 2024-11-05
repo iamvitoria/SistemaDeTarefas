@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, render_template
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 
@@ -27,7 +27,7 @@ class Task(db.Model):
 # Rota para a raiz
 @app.route('/')
 def index():
-    return "Bem-vindo ao Sistema de Tarefas!"
+    return render_template('index.html')  # Renderiza o HTML da pasta templates
 
 # Rota para obter tarefas
 @app.route('/tasks', methods=['GET'])

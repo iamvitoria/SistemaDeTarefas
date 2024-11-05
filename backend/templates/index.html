@@ -1,17 +1,20 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Gerenciador de Tarefas</title>
-  <script src="/static/script.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/css/style.css">
+    <title>Sistema de Tarefas</title>
 </head>
 <body>
-  <h1>Gerenciador de Tarefas</h1>
-
-  <input type="text" id="newTask" placeholder="Digite a nova tarefa">
-  <button onclick="addTask()">Adicionar Tarefa</button>
-
-  <ul id="taskList"></ul>
+    <h1>Sistema de Tarefas</h1>
+    <div>
+        <input type="text" id="taskName" placeholder="Nome da tarefa" required>
+        <input type="number" id="taskOrder" placeholder="Custo" required>
+        <input type="date" id="taskDeadline" required>
+        <button id="saveTaskButton">Salvar Tarefa</button>
+    </div>
+    <ul id="taskList"></ul>
+    <script src="/static/js/script.js"></script>
 </body>
 </html>
