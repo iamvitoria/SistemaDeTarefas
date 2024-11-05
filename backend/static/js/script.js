@@ -2,35 +2,39 @@ document.addEventListener('DOMContentLoaded', function() {
   let selectedTaskId = null; // Variável para armazenar a tarefa selecionada
 
   // Função para buscar as tarefas do servidor
-  function fetchTasks() {
-      fetch('/tasks')
-          .then(response => {
-              if (!response.ok) {
-                  throw new Error('Network response was not ok');
-              }
-              return response.json();
-          })
-          .then(data => {
-              const taskList = document.getElementById('taskList');
-              taskList.innerHTML = ''; // Limpa a lista antes de adicionar novas tarefas
-              data.forEach(task => {
-                  const listItem = document.createElement('li');
-                  listItem.textContent = `Nome: ${task.nome}, Custo: ${task.custo}, Data Limite: ${task.data_limite}`;
+function fetchTasks() {
+    fetch('/tasks')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            const taskList = document.getElementById('taskList');
+            taskList.innerHTML = ''; // Limpa a lista antes de adicionar novas tarefas
+            data.forEach(task => {
+                const row = document.createElement('tr'); // Cria uma nova linha para a tabela
+                row.innerHTML = `
+                    <td>${task.nome}</td>
+                    <td>${task.custo}</td>
+                    <td>${task.data_limite}</td>
+                `;
 
-                  // Adiciona um evento de clique para selecionar a tarefa
-                  listItem.addEventListener('click', () => {
-                      selectTask(task.id, listItem);
-                  });
+                // Adiciona um evento de clique para selecionar a tarefa
+                row.addEventListener('click', () => {
+                    selectTask(task.id, row);
+                });
 
-                  taskList.appendChild(listItem);
-              });
-          })
-          .catch(error => {
-              console.error('Erro ao buscar tarefas:', error);
-              const taskList = document.getElementById('taskList');
-              taskList.innerHTML = '<li>Erro ao carregar tarefas.</li>';
-          });
-  }
+                taskList.appendChild(row); // Adiciona a linha à tabela
+            });
+        })
+        .catch(error => {
+            console.error('Erro ao buscar tarefas:', error);
+            const taskList = document.getElementById('taskList');
+            taskList.innerHTML = '<tr><td colspan="3">Erro ao carregar tarefas.</td></tr>';
+        });
+}
 
   // Função para selecionar uma tarefa
   function selectTask(taskId, listItem) {

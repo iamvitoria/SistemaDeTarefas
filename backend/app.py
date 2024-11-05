@@ -37,17 +37,11 @@ class Task(db.Model):
 def index():
     return render_template('index.html')
 
-# Rota para obter todas as tarefas
+# Rota para obter tarefas
 @app.route('/tasks', methods=['GET'])
 def get_tasks():
     tasks = Task.query.all()
     return jsonify([task.to_dict() for task in tasks])
-
-# Rota para obter uma tarefa específica
-@app.route('/tasks/<int:task_id>', methods=['GET'])
-def get_task(task_id):
-    task = Task.query.get_or_404(task_id)
-    return jsonify(task.to_dict())
 
 # Rota para adicionar uma nova tarefa
 @app.route('/tasks', methods=['POST'])

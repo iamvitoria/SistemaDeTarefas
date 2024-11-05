@@ -5,44 +5,41 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/static/css/style.css">
     <title>Sistema de Tarefas</title>
-    <style>
-        .selected {
-            background-color: #e0e0e0; /* Cor de fundo para a tarefa selecionada */
-        }
-        /* Estilo para o popup */
-        .popup {
-            display: none;
-            position: fixed;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            justify-content: center;
-            align-items: center;
-        }
-        .popup-content {
-            background-color: white;
-            padding: 20px;
-            border-radius: 5px;
-        }
-    </style>
 </head>
 <body>
     <h1>Sistema de Tarefas</h1>
-    <div>
-        <input type="text" id="nome" placeholder="Nome da tarefa" required>
-        <input type="number" id="custo" placeholder="Custo" required>
-        <input type="date" id="data_limite" required>
-        <button id="saveTaskButton">Salvar Tarefa</button>
-        <button id="editTaskButton">Editar Tarefa</button>
-        <button id="deleteTaskButton">Deletar Tarefa</button>
+    <div id="task-container">
+        <div>
+            <input type="text" id="nome" placeholder="Nome da tarefa" required>
+            <input type="number" id="custo" placeholder="Custo" required>
+            <input type="date" id="data_limite" required>
+            <button id="saveTaskButton">Salvar Tarefa</button>
+        </div>
+        
+        <h2>Listagem das Tarefas</h2>
+        <table id="taskTable">
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>Custo</th>
+                    <th>Data Limite</th>
+                </tr>
+            </thead>
+            <tbody id="taskList">
+                <!-- As tarefas serão inseridas aqui dinamicamente -->
+            </tbody>
+        </table>
+        
+        <div class="button-container">
+            <button id="editTaskButton">Editar Tarefa</button>
+            <button id="deleteTaskButton">Deletar Tarefa</button>
+        </div>
     </div>
-    <ul id="taskList"></ul> 
 
     <!-- Popup para edição de tarefa -->
     <div class="popup" id="editPopup">
         <div class="popup-content">
+            <span class="close" id="closePopupButton">&times;</span>
             <h2>Editar Tarefa</h2>
             <label for="editNome">Nome da Tarefa:</label>
             <input type="text" id="editNome" required>
@@ -51,7 +48,6 @@
             <label for="editDataLimite">Data Limite:</label>
             <input type="date" id="editDataLimite" required>
             <button id="updateTaskButton">Atualizar Tarefa</button>
-            <button id="closePopupButton">Cancelar</button>
         </div>
     </div>
 
