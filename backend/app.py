@@ -93,6 +93,33 @@ def delete_task(task_id):
     db.session.commit()
     return jsonify({'message': 'Task deleted'}), 204
 
+# Rota para atualizar a ordem de uma tarefa
+@app.route('/tasks/<int:task_id>/reorder', methods=['POST'])
+def reorder_task(task_id):
+    direction = request.json.get('direction')  # 'up' ou 'down'
+    task = Task.query.get_or_404(task_id)
+
+    if direction == 'up':
+        # Encontrar a tarefa anterior
+        previous_task = Task.query.filter(Task.ordem < task.ordem).order_by(Task.ordem.desc()).first()
+        if previous_task:
+            # Trocar a ordem entre as duas tarefas, mas garantir que não exista duplicidade
+            temp_order = task.ordem
+            task.ordem = previous_task.ordem
+            previous_task.ordem = temp_order
+            db.session.commit()
+    elif direction == 'down':
+        # Encontrar a próxima tarefa
+        next_task = Task.query.filter(Task.ordem > task.ordem).order_by(Task.ordem.asc()).first()
+        if next_task:
+            # Trocar a ordem entre as duas tarefas, mas garantir que não exista duplicidade
+            temp_order = task.ordem
+            task.ordem = next_task.ordem
+            next_task.ordem = temp_order
+            db.session.commit()
+
+    return jsonify({'message': 'Ordem atualizada'}), 200
+
 # Criar as tabelas no banco de dados
 with app.app_context():
     db.create_all()
