@@ -3,13 +3,20 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function fetchTasks() {
         fetch('/tasks')
-            .then(response => response.json())
-            .then(data => renderTasks(data))
+            .then(response => {
+                console.log('Response status:', response.status);
+                return response.json();
+            })
+            .then(data => {
+                console.log('Tasks data:', data);
+                renderTasks(data);
+            })
             .catch(error => {
                 console.error('Erro ao buscar tarefas:', error);
                 document.getElementById('taskList').innerHTML = '<tr><td colspan="5">Erro ao carregar tarefas.</td></tr>';
             });
     }
+    
 
     function renderTasks(tasks) {
         const taskList = document.getElementById('taskList');
@@ -65,8 +72,31 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     document.getElementById('saveTaskButton').addEventListener('click', async () => {
-        // ... (Código existente)
+        const nome = document.getElementById('newNome').value;
+        const custo = parseFloat(document.getElementById('newCusto').value);
+        const data_limite = document.getElementById('newDataLimite').value;
+    
+        try {
+            const response = await fetch('/tasks', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ nome, custo, data_limite }),
+            });
+    
+            if (response.ok) {
+                alert('Tarefa adicionada com sucesso!');
+                fetchTasks(); // Atualiza a lista de tarefas
+                document.getElementById('newNome').value = '';
+                document.getElementById('newCusto').value = '';
+                document.getElementById('newDataLimite').value = '';
+            } else {
+                alert('Erro ao adicionar a tarefa.');
+            }
+        } catch (error) {
+            console.error('Erro ao adicionar tarefa:', error);
+        }
     });
+    
 
     function openEditPopup(taskId) {
         fetch(`/tasks/${taskId}`)

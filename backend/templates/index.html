@@ -6,6 +6,35 @@
     <link rel="stylesheet" href="/static/css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <title>Sistema de Tarefas</title>
+    <style>
+        .form-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 20px;
+        }
+        
+        .form-container input {
+            margin-bottom: 10px;
+            padding: 10px;
+            width: 300px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .form-container button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: #28a745;
+            color: white;
+            cursor: pointer;
+        }
+
+        .form-container button:hover {
+            background-color: #218838;
+        }
+    </style>
 </head>
 <body>
     <h1>Sistema de Tarefas</h1>
@@ -24,19 +53,11 @@
             </thead>
             <tbody id="taskList"></tbody>
         </table>
-
-        <div class="button-container" style="display: none;">
-            <button id="editTaskButton">Editar Tarefa</button>
-            <button id="deleteTaskButton">Deletar Tarefa</button>
-        </div>     
         
-        </br>
-        </br>
-        
-        <div>
-            <input type="text" id="nome" placeholder="Nome da tarefa" required>
-            <input type="number" id="custo" placeholder="Custo" required>
-            <input type="date" id="data_limite" required>
+        <div class="form-container">
+            <input type="text" id="newNome" placeholder="Nome da tarefa" required>
+            <input type="number" id="newCusto" placeholder="Custo" required>
+            <input type="date" id="newDataLimite" required>
             <button id="saveTaskButton">Incluir Tarefa</button>
         </div>
     </div>
