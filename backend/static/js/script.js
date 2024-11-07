@@ -72,24 +72,31 @@ document.addEventListener('DOMContentLoaded', function () {
         const nome = document.getElementById('editNome').value;
         const custo = parseFloat(document.getElementById('editCusto').value);
         const dataLimite = document.getElementById('editDataLimite').value;
-
+    
         if (!nome || !custo || !dataLimite) {
             alert('Por favor, preencha todos os campos.');
             return;
         }
-
+    
         fetch(`/tasks/${selectedTaskId}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ nome, custo, data_limite: dataLimite })
         })
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                return response.json().then(data => {
+                    alert(data.message);  // Exibe o erro do backend
+                });
+            }
+            return response.json();
+        })
         .then(data => {
             fetchTasks();
             document.getElementById('editPopup').style.display = 'none';
         })
         .catch(error => console.error('Erro ao atualizar tarefa:', error));
-    });
+    });    
 
     // Função para excluir uma tarefa
     window.deleteTask = function (taskId) {
@@ -124,26 +131,28 @@ document.addEventListener('DOMContentLoaded', function () {
         const nome = document.getElementById('newNome').value;
         const custo = parseFloat(document.getElementById('newCusto').value);
         const dataLimite = document.getElementById('newDataLimite').value;
-
+    
         if (!nome || !custo || !dataLimite) {
             alert('Por favor, preencha todos os campos.');
             return;
         }
-
+    
         fetch('/tasks', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ nome, custo, data_limite: dataLimite })
         })
-        .then(response => response.json())
-        .then(() => {
-            fetchTasks();
-            document.getElementById('newNome').value = '';
-            document.getElementById('newCusto').value = '';
-            document.getElementById('newDataLimite').value = '';
+        .then(response => {
+            if (response.ok) {
+                fetchTasks();
+            } else {
+                return response.json().then(data => {
+                    alert(data.message);  // Exibe a mensagem de erro
+                });
+            }
         })
         .catch(error => console.error('Erro ao adicionar tarefa:', error));
-    });
+    });    
 
     // Função para cancelar a edição e fechar o popup
     document.getElementById('cancelTaskButton').addEventListener('click', function () {

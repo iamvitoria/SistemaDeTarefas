@@ -54,12 +54,19 @@ def get_task(task_id):
 def add_task():
     data = request.json
     try:
+        # Verificar se já existe uma tarefa com o mesmo nome
+        if Task.query.filter_by(nome=data['nome']).first():
+            return jsonify({'message': 'Já existe uma tarefa com esse nome. Por favor, insira outro nome.'}), 400
+
         data_limite = datetime.strptime(data['data_limite'], '%Y-%m-%d')
         max_ordem = db.session.query(func.max(Task.ordem)).scalar()
         nova_ordem = (max_ordem or 0) + 1  # Incrementa a ordem
+
+        # Adicionando a nova tarefa
         new_task = Task(nome=data['nome'], custo=data['custo'], data_limite=data_limite, ordem=nova_ordem)
         db.session.add(new_task)
         db.session.commit()
+
         return jsonify(new_task.to_dict()), 201
     except Exception as e:
         db.session.rollback()  # Reverte a sessão em caso de erro
@@ -71,6 +78,8 @@ def add_task():
 def edit_task(task_id):
     task = Task.query.get_or_404(task_id)
     data = request.json
+    
+    # Verifica se o nome já existe, exceto para a tarefa que está sendo editada
     if Task.query.filter(Task.nome == data['nome'], Task.id != task_id).first():
         return jsonify({'message': 'Esse nome de tarefa já existe. A edição não pode ser realizada.'}), 400
 
