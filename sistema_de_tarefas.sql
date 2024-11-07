@@ -1,36 +1,27 @@
+-- Reiniciar o banco de dados
 DROP DATABASE IF EXISTS sistema_de_tarefas;
 CREATE DATABASE sistema_de_tarefas;
 USE sistema_de_tarefas;
 
+-- Concessão de privilégios
 GRANT ALL PRIVILEGES ON sistema_de_tarefas.* TO 'root'@'localhost';
 FLUSH PRIVILEGES;
 
+-- Criação da tabela sem índice único para a coluna 'ordem'
 CREATE TABLE tarefa (
     idTarefa INT AUTO_INCREMENT PRIMARY KEY,
     nome VARCHAR(100) NOT NULL,
     custo DECIMAL(8, 2) NOT NULL,
     dataLimite DATE NOT NULL,
-    ordem INT UNIQUE NOT NULL
+    ordem INT NOT NULL
 );
 
-INSERT INTO tarefa (nome, custo, dataLimite, ordem) VALUES ('Estudar para o exame', 50.00, '2024-11-10', 1);
-INSERT INTO tarefa (nome, custo, dataLimite, ordem) VALUES ('Comprar mantimentos', 150.50, '2024-11-05', 2);
-INSERT INTO tarefa (nome, custo, dataLimite, ordem) VALUES ('Enviar relatório', 0.00, '2024-11-15', 3);
-INSERT INTO tarefa (nome, custo, dataLimite, ordem) VALUES ('Limpar a casa', 30.00, '2024-11-08', 4);
+-- Inserção de dados na tabela 'tarefa'
+INSERT INTO tarefa (nome, custo, dataLimite, ordem) VALUES 
+('Estudar para o exame', 50.00, '2024-11-10', 1),
+('Comprar mantimentos', 150.50, '2024-11-05', 2),
+('Enviar relatório', 0.00, '2024-11-15', 3),
+('Limpar a casa', 30.00, '2024-11-08', 4);
 
-ALTER TABLE tarefa MODIFY COLUMN custo DECIMAL(8, 2) NOT NULL;
-ALTER TABLE tarefa DROP INDEX ordem_2;
-ALTER TABLE tarefa MODIFY COLUMN ordem INT NOT NULL DEFAULT 0;
-
-SELECT ordem, COUNT(*) 
-FROM tarefa
-GROUP BY ordem
-HAVING COUNT(*) > 1;
-
-UPDATE tarefa 
-SET ordem = (@i := @i + 1) 
-WHERE id_tarefa IS NOT NULL; -- Supondo que 'id_tarefa' seja uma chave primária ou chave única.
-
-ALTER TABLE tarefa ADD CONSTRAINT unique_ordem UNIQUE (ordem);
-
+-- Verificar a estrutura e o conteúdo da tabela
 SELECT * FROM tarefa;

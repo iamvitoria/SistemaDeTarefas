@@ -26,15 +26,15 @@ document.addEventListener('DOMContentLoaded', function () {
         return `${day}/${month}/${year}`;
     }
 
-    // Função para renderizar as tarefas na tabela
     function renderTasks(tasks) {
         const taskList = document.getElementById('taskList');
         taskList.innerHTML = '';
-
+    
         tasks.forEach(task => {
             const row = document.createElement('tr');
+            row.setAttribute('data-task-id', task.id); // Adiciona o ID da tarefa como atributo de dados
             if (task.custo >= 1000) row.classList.add('highlight'); // Destacar tarefas com custo maior ou igual a 1000
-
+    
             row.innerHTML = `
                 <td>${task.id}</td>
                 <td>${task.nome}</td>
@@ -51,7 +51,7 @@ document.addEventListener('DOMContentLoaded', function () {
             `;
             taskList.appendChild(row);
         });
-    }
+    }    
 
     // Função para editar uma tarefa
     window.editTask = function (taskId) {
@@ -97,23 +97,27 @@ document.addEventListener('DOMContentLoaded', function () {
             fetch(`/tasks/${taskId}`, {
                 method: 'DELETE'
             })
-            .then(response => response.json())
-            .then(() => fetchTasks())
+            .then(response => {
+                if (response.ok) {
+                    // Remover a tarefa do DOM imediatamente após a confirmação de exclusão
+                    document.querySelector(`tr[data-task-id="${taskId}"]`).remove();
+                } else {
+                    console.error('Erro ao excluir tarefa:', response.statusText);
+                }
+            })
             .catch(error => console.error('Erro ao excluir tarefa:', error));
         }
     };
 
-    // Função para reordenar tarefas
-    window.reorderTask = function (taskId, direction) {
-        fetch(`/tasks/${taskId}/reorder`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ direction })
+    // Função para reordenar uma tarefa
+    window.reorderTask = function(taskId, direction) {
+        fetch(`/tasks/reorder/${taskId}/${direction}`, {
+            method: 'POST'
         })
         .then(response => response.json())
-        .then(() => fetchTasks())
+        .then(() => fetchTasks())  // Recarrega a lista para atualizar a ordem
         .catch(error => console.error('Erro ao reordenar tarefa:', error));
-    };
+    };    
 
     // Função para incluir uma nova tarefa
     document.getElementById('saveTaskButton').addEventListener('click', function () {
