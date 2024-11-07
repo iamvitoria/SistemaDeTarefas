@@ -17,12 +17,13 @@ Este é um projeto de aplicação web para gerenciar tarefas utilizando Flask, S
 - `templates/index.html`: Template HTML que renderiza a interface de gerenciamento de tarefas.
 - `static/style.css`: Arquivo CSS para estilização da interface.
 - `static/script.js`: Código JavaScript para manipulação da interface e interações.
+- **Banco de Dados**: Um arquivo SQL para configuração do banco de dados está disponível para download no repositório.
 
 ## Instalação
 
 1. **Clone o repositório**:
    ```bash
-   git clone https://github.com/seu-usuario/sistema-de-tarefas.git
+   git clone https://github.com/iamvitoria/SistemaDeTarefas.git
    cd sistema-de-tarefas
    ```
 
@@ -33,13 +34,13 @@ Este é um projeto de aplicação web para gerenciar tarefas utilizando Flask, S
 
 3. **Configure o Banco de Dados**:
    - Certifique-se de que o MySQL está instalado e em execução.
-   - Crie um banco de dados:
-     ```sql
-     CREATE DATABASE sistema_de_tarefas;
-     ```
-   - Atualize as configurações de conexão no arquivo `app.py` com suas credenciais do MySQL.
+   - Crie o banco de dados executando o script SQL disponível no repositório:
+     - No MySQL, execute o script SQL do banco de dados fornecido para configurar o banco e as tabelas necessárias.
 
-4. **Inicialize o Banco de Dados**:
+4. **Atualize as Configurações de Conexão**:
+   - Verifique e ajuste as credenciais de conexão no arquivo `app.py` conforme suas configurações do MySQL.
+
+5. **Inicialize o Banco de Dados**:
    - Com o terminal aberto na pasta do projeto, execute:
      ```bash
      python
@@ -50,7 +51,7 @@ Este é um projeto de aplicação web para gerenciar tarefas utilizando Flask, S
      db.create_all()
      ```
 
-5. **Execute a aplicação**:
+6. **Execute a aplicação**:
    ```bash
    python app.py
    ```
@@ -73,7 +74,3 @@ Este é um projeto de aplicação web para gerenciar tarefas utilizando Flask, S
 ## Configuração e Estilo
 
 A interface possui um design simples, com estilização em `style.css` e uma funcionalidade de destaque para tarefas de alto custo.
-
----
-
-Esse README cobre os passos essenciais para o uso e a configuração do projeto.
