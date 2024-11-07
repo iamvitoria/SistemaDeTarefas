@@ -14,17 +14,25 @@ h1, h2 {
 #task-container {
     margin: 20px auto;
     width: 80%;
-    max-width: 800px;
+    max-width: 700px;
     background-color: white;
-    border-radius: 5px;
+    border-radius: 20px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     padding: 20px;
+}
+
+#taskTable {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    border-radius: 30px;
 }
 
 table {
     width: 100%;
     border-collapse: collapse;
     margin-top: 20px;
+    border-radius: 30px;
 }
 
 th, td {
@@ -100,6 +108,7 @@ td button:hover {
     width: 30%; /* Define largura fixa para que fiquem mais equilibrados */
 }
 
+/* Botões com estilo igual para Incluir e Atualizar */
 .form-container button {
     padding: 10px 20px;
     border: none;
@@ -107,6 +116,11 @@ td button:hover {
     background-color: #333;
     color: white;
     cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.form-container button:hover {
+    background-color: #444;
 }
 
 /* Estilo do popup de edição */
@@ -117,8 +131,6 @@ td button:hover {
     left: 50%;
     transform: translate(-50%, -50%); /* Centraliza o popup na tela */
     width: auto;
-    max-width: 400px;
-    min-width: 300px;
     height: auto;
     background-color: rgba(0, 0, 0, 0.5);  /* Fundo semi-transparente */
     align-items: center;
@@ -129,16 +141,17 @@ td button:hover {
 /* Contêiner do conteúdo do popup */
 .popup-content {
     background-color: white;
-    padding: 20px;
+    padding: 40px;
+    padding-left: 20px;
     border-radius: 5px;
-    width: 400px;  /* Tamanho fixo */
+    width: 400px;  
     text-align: center;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Sombra para destacar o popup */
 }
 
 /* Estilização dos campos dentro do popup */
 .popup-content input {
-    margin-bottom: 10px;
+    margin-bottom: 15px;
     padding: 10px;
     width: 100%;  /* Para o campo ocupar a largura total do container */
     border: 1px solid #ccc;
@@ -161,25 +174,8 @@ td button:hover {
     background-color: #444;
 }
 
-/* Estilo do botão de fechar */
-.close {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    font-size: 24px;
-    cursor: pointer;
-    color: #aaa;
-}
-
-.close:hover {
-    color: #333;
-}
-
-#editPopup input {
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    font-size: 14px;
-    width: 100%;
-    box-sizing: border-box;
+/* Estilo para destacar a tarefa reordenada */
+.task-highlight {
+    transition: background-color 0.3s;
+    background-color: #cce5ff;
 }

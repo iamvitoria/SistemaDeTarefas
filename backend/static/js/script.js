@@ -141,11 +141,6 @@ document.addEventListener('DOMContentLoaded', function () {
         .catch(error => console.error('Erro ao adicionar tarefa:', error));
     });
 
-    // Função para fechar o popup de edição
-    document.getElementById('closePopupButton').addEventListener('click', function () {
-        document.getElementById('editPopup').style.display = 'none';
-    });
-
     // Função para cancelar a edição e fechar o popup
     document.getElementById('cancelTaskButton').addEventListener('click', function () {
         document.getElementById('editPopup').style.display = 'none';

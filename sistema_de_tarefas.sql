@@ -22,4 +22,15 @@ ALTER TABLE tarefa MODIFY COLUMN custo DECIMAL(8, 2) NOT NULL;
 ALTER TABLE tarefa DROP INDEX ordem_2;
 ALTER TABLE tarefa MODIFY COLUMN ordem INT NOT NULL DEFAULT 0;
 
+SELECT ordem, COUNT(*) 
+FROM tarefa
+GROUP BY ordem
+HAVING COUNT(*) > 1;
+
+UPDATE tarefa 
+SET ordem = (@i := @i + 1) 
+WHERE id_tarefa IS NOT NULL; -- Supondo que 'id_tarefa' seja uma chave primária ou chave única.
+
+ALTER TABLE tarefa ADD CONSTRAINT unique_ordem UNIQUE (ordem);
+
 SELECT * FROM tarefa;
