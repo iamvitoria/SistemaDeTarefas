@@ -53,7 +53,6 @@ Este é um projeto de aplicação web para gerenciar tarefas utilizando Flask, S
 
 6. **Execute a aplicação**:
    ```bash
-   cd backend
    python app.py
    ```
    - Acesse a aplicação em [http://localhost:5000](http://localhost:5000).
