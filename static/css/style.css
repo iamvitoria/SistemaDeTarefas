@@ -13,7 +13,7 @@ h1, h2 {
 
 #task-container {
     margin: 20px auto;
-    width: 80%;
+    width: 90%;
     max-width: 700px;
     background-color: white;
     border-radius: 20px;
@@ -21,20 +21,23 @@ h1, h2 {
     padding: 20px;
 }
 
+/* Tabela com scroll horizontal em dispositivos pequenos */
 #taskTable {
     width: 100%;
     border-collapse: collapse;
     margin-top: 20px;
-    border-radius: 30px;
+    border-radius: 10px;
+    overflow: hidden;
+    font-size: 14px;
 }
 
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-    border-radius: 30px;
+/* Contêiner de tabela com scroll */
+#taskTableWrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch; /* Suporte para scroll suave no mobile */
 }
 
+/* Estilo das células */
 th, td {
     padding: 10px;
     text-align: center;
@@ -45,137 +48,103 @@ th {
     background-color: #f0f0f0;
 }
 
-/* Aumenta a largura das colunas */
-th:nth-child(1), td:nth-child(1) { width: 10%; }
-th:nth-child(2), td:nth-child(2) { width: 25%; }
-th:nth-child(3), td:nth-child(3) { width: 15%; }
-th:nth-child(4), td:nth-child(4) { width: 20%; }
-th:nth-child(5), td:nth-child(5) { width: 20%; }
-th:nth-child(6), td:nth-child(6) { width: 10%; }
-
-tr:hover {
-    background-color: #f9f9f9;
+/* Responsividade para fontes e espaçamento */
+@media (max-width: 768px) {
+    th, td {
+        font-size: 12px;
+        padding: 8px;
+    }
 }
 
-/* Destacar linhas com custo >= 1000 */
-.highlight {
-    background-color: #fff9c4; /* Amarelo pastel */
+@media (max-width: 480px) {
+    th, td {
+        font-size: 10px;
+        padding: 6px;
+    }
+
+    h1, h2 {
+        font-size: 16px;
+    }
 }
 
-/* Estilo dos botões (lápis e lixeira) */
-td button {
-    background: none;
-    border: none;
-    cursor: pointer;
-    color: #000;
-    font-size: 18px;
-    margin-right: 10px;
-}
-
-td button:hover {
-    color: #000;
-    background-color: #d3d3d3; /* Fundo cinza claro */
-}
-
-/* Estilo do formulário de inclusão */
+/* Formulário de inclusão */
 .form-container {
     display: flex;
     flex-direction: column;
     align-items: center;
     margin-top: 20px;
+    width: 100%;
 }
 
 .form-fields {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
     flex-direction: column;
-    width: 100%;
-    max-width: 800px; /* Limita o tamanho máximo do formulário */
-    gap: 15px; /* Espaço entre os campos */
-    margin-bottom: 20px;
+    gap: 15px;
+    width: 40%;
+    max-width: 700px;
 }
 
-.form-container input {
+.form-fields input {
+    width: 100%;
     padding: 10px;
-    width: 100%; /* Faz os inputs preencherem a largura disponível */
     border: 1px solid #ccc;
     border-radius: 5px;
+    font-size: 14px;
 }
 
-/* Alinhamento específico para os inputs do formulário */
-.form-fields input {
-    width: 30%; /* Define largura fixa para que fiquem mais equilibrados */
-}
-
-/* Botões com estilo igual para Incluir e Atualizar */
 .form-container button {
-    padding: 10px 20px;
+    margin-top: 20px; /* Adiciona espaço entre os campos e o botão */
+    padding: 10px;
+    width: 100%;
+    max-width: 200px;
     border: none;
     border-radius: 5px;
     background-color: #333;
     color: white;
+    font-size: 14px;
     cursor: pointer;
-    transition: background-color 0.3s;
 }
+
 
 .form-container button:hover {
     background-color: #444;
 }
 
-/* Estilo do popup de edição */
+/* Popup de edição */
 .popup {
     display: none;
     position: fixed;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%); /* Centraliza o popup na tela */
-    width: auto;
-    height: auto;
-    background-color: rgba(0, 0, 0, 0.5);  /* Fundo semi-transparente */
-    align-items: center;
-    justify-content: center;
-    z-index: 999;  /* Garantir que o popup fique sobre outros elementos */
-}
-
-/* Contêiner do conteúdo do popup */
-.popup-content {
+    transform: translate(-50%, -50%);
+    width: 90%;
+    max-width: 400px;
     background-color: white;
-    padding: 40px;
-    padding-left: 20px;
-    border-radius: 5px;
-    width: 400px;  
-    text-align: center;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Sombra para destacar o popup */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    z-index: 1000;
+    padding: 20px;
 }
 
-/* Estilização dos campos dentro do popup */
 .popup-content input {
-    margin-bottom: 15px;
+    width: 100%;
     padding: 10px;
-    width: 100%;  /* Para o campo ocupar a largura total do container */
+    margin-bottom: 15px;
     border: 1px solid #ccc;
     border-radius: 5px;
 }
 
 .popup-content button {
-    padding: 10px 20px;
+    padding: 10px;
+    width: 100%;
     border: none;
     border-radius: 5px;
     background-color: #333;
     color: white;
+    font-size: 14px;
     cursor: pointer;
-    margin-top: 10px;
-    transition: background-color 0.3s;
 }
 
-/* Efeito ao passar o mouse nos botões */
 .popup-content button:hover {
     background-color: #444;
 }
-
-/* Estilo para destacar a tarefa reordenada */
-.task-highlight {
-    transition: background-color 0.3s;
-    background-color: #cce5ff;
-}  

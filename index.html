@@ -11,21 +11,23 @@
     <h1>Sistema de Tarefas</h1>
     <div id="task-container">
         <h2>Listagem das Tarefas</h2>
-        <table id="taskTable">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Nome</th>
-                    <th>Custo</th>
-                    <th>Data Limite</th>
-                    <th>Ações</th>
-                    <th>Reordenar</th>
-                </tr>
-            </thead>
-            <tbody id="taskList">
-                <!-- Linhas de tarefas dinâmicas aqui -->
-            </tbody>
-        </table>
+        <div id="taskTableWrapper">
+            <table id="taskTable">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nome</th>
+                        <th>Custo</th>
+                        <th>Data Limite</th>
+                        <th>Ações</th>
+                        <th>Reordenar</th>
+                    </tr>
+                </thead>
+                <tbody id="taskList">
+                    <!-- Linhas de tarefas dinâmicas aqui -->
+                </tbody>
+            </table>
+        </div>        
 
         <div class="form-container">
             <h2>Adicione uma nova tarefa</h2>
