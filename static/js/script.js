@@ -1,78 +1,52 @@
 const backendUrl = "https://iamvitoria.pythonanywhere.com";  // Definir a URL corretamente
 
-document.addEventListener('DOMContentLoaded', function () {
-    let selectedTaskId = null;
-
-    // Função para buscar as tarefas do servidor e exibi-las
-    function fetchTasks() {
-        fetch(`${backendUrl}/tasks`, {  // Use 'backendUrl' em vez de 'API_URL'
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        })
-        .then(response => response.json())
-        .then(data => renderTasks(data))  // Aqui você pode usar os dados para exibir no front-end
-        .catch(error => console.log('Erro:', error));
+document.addEventListener('DOMContentLoaded', () => {
+    // Função para obter todas as tarefas do backend
+    async function fetchTasks() {
+        try {
+            const response = await fetch(`${backendUrl}/tasks`);
+            const tasks = await response.json();
+            renderTasks(tasks);  // Passa as tarefas para a função renderTasks
+        } catch (error) {
+            console.error('Erro ao buscar tarefas:', error);
+        }
     }
 
-    // Função para formatar custo em moeda
-    function formatCurrency(value) {
-        return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-    }
-
-    // Função para formatar a data no formato dd/mm/yyyy
-    function formatDate(dateString) {
-        const date = new Date(dateString);
-        const day = String(date.getDate()).padStart(2, '0');
-        const month = String(date.getMonth() + 1).padStart(2, '0');
-        const year = date.getFullYear();
-        return `${day}/${month}/${year}`;
-    }
-
-    function renderTasks(tasks) {
-        const taskList = document.getElementById('taskList');
-        taskList.innerHTML = '';
-
-        tasks.forEach(task => {
-            const row = document.createElement('tr');
-            row.setAttribute('data-task-id', task.id); // Adiciona o ID da tarefa como atributo de dados
-            if (task.custo >= 1000) row.classList.add('highlight'); // Destacar tarefas com custo maior ou igual a 1000
-
-            row.innerHTML = `
-                <td>${task.id}</td>
-                <td>${task.nome}</td>
-                <td>${formatCurrency(task.custo)}</td>
-                <td>${formatDate(task.data_limite)}</td>
-                <td>
-                    <button onclick="editTask(${task.id})" class="action-btn"><i class="fas fa-pencil-alt"></i></button>
-                    <button onclick="deleteTask(${task.id})" class="action-btn"><i class="fas fa-trash"></i></button>
-                </td>
-                <td>
-                    <button onclick="reorderTask(${task.id}, 'up')">&#9650;</button>
-                    <button onclick="reorderTask(${task.id}, 'down')">&#9660;</button>
-                </td>
-            `;
-            taskList.appendChild(row);
-        });
+    // Função para adicionar uma nova tarefa
+    async function addTask(task) {
+        try {
+            const response = await fetch(`${backendUrl}/tasks`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(task),
+            });
+            const newTask = await response.json();
+            console.log('Tarefa adicionada:', newTask);
+            fetchTasks();  // Recarrega a lista de tarefas após adicionar uma nova
+        } catch (error) {
+            console.error('Erro ao adicionar tarefa:', error);
+        }
     }
 
     // Função para editar uma tarefa
-    window.editTask = function (taskId) {
+    window.editTask = async function (taskId) {
         selectedTaskId = taskId;
-        fetch(`${backendUrl}/tasks/${taskId}`)
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById('editNome').value = data.nome;
-                document.getElementById('editCusto').value = data.custo;
-                document.getElementById('editDataLimite').value = data.data_limite;
-                document.getElementById('editPopup').style.display = 'block';
-            })
-            .catch(error => console.error('Erro ao buscar tarefa:', error));
+        try {
+            const response = await fetch(`${backendUrl}/tasks/${taskId}`);
+            const data = await response.json();
+            document.getElementById('editNome').value = data.nome;
+            document.getElementById('editCusto').value = data.custo;
+            document.getElementById('editDataLimite').value = data.data_limite;
+            document.getElementById('editPopup').style.display = 'block';
+        } catch (error) {
+            console.error('Erro ao buscar tarefa:', error);
+        }
     };
 
     // Função para atualizar uma tarefa
-    document.getElementById('updateTaskButton').addEventListener('click', function () {
+    document.getElementById('updateTaskButton').addEventListener('click', async function () {
         const nome = document.getElementById('editNome').value;
         const custo = parseFloat(document.getElementById('editCusto').value);
         const dataLimite = document.getElementById('editDataLimite').value;
@@ -82,44 +56,51 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
-        fetch(`${backendUrl}/tasks/${selectedTaskId}`, {  // Usando backendUrl aqui
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ nome, custo, data_limite: dataLimite })
-        })
-        .then(response => response.json())
-        .then(data => {
+        try {
+            const response = await fetch(`${backendUrl}/tasks/${selectedTaskId}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ nome, custo, data_limite: dataLimite }),
+            });
+            const updatedTask = await response.json();
+            console.log('Tarefa atualizada:', updatedTask);
             fetchTasks();
             document.getElementById('editPopup').style.display = 'none';
-        })
-        .catch(error => console.error('Erro ao atualizar tarefa:', error));
+        } catch (error) {
+            console.error('Erro ao atualizar tarefa:', error);
+        }
     });
 
     // Função para excluir uma tarefa
-    window.deleteTask = function (taskId) {
+    window.deleteTask = async function (taskId) {
         if (confirm('Você tem certeza que deseja excluir esta tarefa?')) {
-            fetch(`${backendUrl}/tasks/${taskId}`, {  // Usando backendUrl aqui
-                method: 'DELETE'
-            })
-            .then(response => {
+            try {
+                const response = await fetch(`${backendUrl}/tasks/${taskId}`, {
+                    method: 'DELETE',
+                });
                 if (response.ok) {
                     document.querySelector(`tr[data-task-id="${taskId}"]`).remove();
                 } else {
                     console.error('Erro ao excluir tarefa:', response.statusText);
                 }
-            })
-            .catch(error => console.error('Erro ao excluir tarefa:', error));
+            } catch (error) {
+                console.error('Erro ao excluir tarefa:', error);
+            }
         }
     };
 
     // Função para reordenar uma tarefa
-    window.reorderTask = function(taskId, direction) {
-        fetch(`${backendUrl}/tasks/reorder/${taskId}/${direction}`, {  // Usando backendUrl aqui
-            method: 'POST'
-        })
-        .then(response => response.json())
-        .then(() => fetchTasks())  // Recarrega a lista para atualizar a ordem
-        .catch(error => console.error('Erro ao reordenar tarefa:', error));
+    window.reorderTask = async function (taskId, direction) {
+        try {
+            const response = await fetch(`${backendUrl}/tasks/reorder/${taskId}/${direction}`, {
+                method: 'POST',
+            });
+            const data = await response.json();
+            console.log('Tarefa reordenada:', data);
+            fetchTasks();  // Recarrega as tarefas para refletir a nova ordem
+        } catch (error) {
+            console.error('Erro ao reordenar tarefa:', error);
+        }
     };
 
     // Função para incluir uma nova tarefa
@@ -133,19 +114,13 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
-        fetch(`${backendUrl}/tasks`, {  // Usando backendUrl aqui
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ nome, custo, data_limite: dataLimite })
-        })
-        .then(response => response.json())
-        .then(() => {
-            fetchTasks();
-            document.getElementById('newNome').value = '';
-            document.getElementById('newCusto').value = '';
-            document.getElementById('newDataLimite').value = '';
-        })
-        .catch(error => console.error('Erro ao adicionar tarefa:', error));
+        const newTask = {
+            nome: nome,
+            custo: custo,
+            data_limite: dataLimite
+        };
+        
+        addTask(newTask);  // Chama a função addTask para adicionar a nova tarefa
     });
 
     // Função para cancelar a edição e fechar o popup
