@@ -12,9 +12,9 @@ document.addEventListener('DOMContentLoaded', function () {
           }
         })
         .then(response => response.json())
-        .then(data => console.log(data)) // Aqui você pode usar os dados para exibir no front-end
+        .then(data => console.log(data))  // Aqui você pode usar os dados para exibir no front-end
         .catch(error => console.log('Erro:', error));
-    }
+     }
 
     // Função para formatar custo em moeda
     function formatCurrency(value) {
