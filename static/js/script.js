@@ -5,16 +5,16 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Função para buscar as tarefas do servidor e exibi-las
     function fetchTasks() {
-        fetch(`${backendUrl}/tasks`, {  // Troquei API_URL por backendUrl
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json'
-          }
+        fetch(`${backendUrl}/tasks`, {  // Use 'backendUrl' em vez de 'API_URL'
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
         })
         .then(response => response.json())
         .then(data => console.log(data))  // Aqui você pode usar os dados para exibir no front-end
         .catch(error => console.log('Erro:', error));
-     }
+    }
 
     // Função para formatar custo em moeda
     function formatCurrency(value) {
