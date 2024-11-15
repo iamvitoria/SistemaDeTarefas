@@ -5,13 +5,15 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Função para buscar as tarefas do servidor e exibi-las
     function fetchTasks() {
-        fetch(`${backendUrl}/tasks`)
-            .then(response => response.json())
-            .then(data => renderTasks(data))
-            .catch(error => {
-                console.error('Erro ao buscar tarefas:', error);
-                document.getElementById('taskList').innerHTML = '<tr><td colspan="5">Erro ao carregar tarefas.</td></tr>';
-            });
+        fetch(`${API_URL}/tasks`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        })
+        .then(response => response.json())
+        .then(data => console.log(data)) // Aqui você pode usar os dados para exibir no front-end
+        .catch(error => console.log('Erro:', error));
     }
 
     // Função para formatar custo em moeda
