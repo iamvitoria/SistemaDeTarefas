@@ -28,6 +28,13 @@ h1, h2 {
     border-radius: 30px;
 }
 
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    border-radius: 30px;
+}
+
 th, td {
     padding: 10px;
     text-align: center;
@@ -122,13 +129,13 @@ td button:hover {
     position: fixed;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%); /* Centraliza o popup na tela */
     width: auto;
     height: auto;
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: rgba(0, 0, 0, 0.5);  /* Fundo semi-transparente */
     align-items: center;
     justify-content: center;
-    z-index: 999;
+    z-index: 999;  /* Garantir que o popup fique sobre outros elementos */
 }
 
 /* Contêiner do conteúdo do popup */
@@ -139,14 +146,14 @@ td button:hover {
     border-radius: 5px;
     width: 400px;  
     text-align: center;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Sombra para destacar o popup */
 }
 
 /* Estilização dos campos dentro do popup */
 .popup-content input {
     margin-bottom: 15px;
     padding: 10px;
-    width: 100%;
+    width: 100%;  /* Para o campo ocupar a largura total do container */
     border: 1px solid #ccc;
     border-radius: 5px;
 }
@@ -162,6 +169,7 @@ td button:hover {
     transition: background-color 0.3s;
 }
 
+/* Efeito ao passar o mouse nos botões */
 .popup-content button:hover {
     background-color: #444;
 }
