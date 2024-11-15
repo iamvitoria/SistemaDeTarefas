@@ -84,21 +84,20 @@ td button:hover {
     align-items: center;
     flex-direction: column;
     width: 100%;
-    max-width: 800px; /* Limita o tamanho máximo do formulário */
-    gap: 15px; /* Espaço entre os campos */
+    max-width: 800px;
+    gap: 15px;
     margin-bottom: 20px;
 }
 
 .form-container input {
     padding: 10px;
-    width: 100%; /* Faz os inputs preencherem a largura disponível */
+    width: 100%;
     border: 1px solid #ccc;
     border-radius: 5px;
 }
 
-/* Alinhamento específico para os inputs do formulário */
 .form-fields input {
-    width: 30%; /* Define largura fixa para que fiquem mais equilibrados */
+    width: 30%;
 }
 
 /* Botões com estilo igual para Incluir e Atualizar */
@@ -131,18 +130,16 @@ td button:hover {
     z-index: 999;
 }
 
-/* Contêiner do conteúdo do popup */
 .popup-content {
     background-color: white;
     padding: 40px;
     padding-left: 20px;
     border-radius: 5px;
-    width: 400px;  
+    width: 400px;
     text-align: center;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
-/* Estilização dos campos dentro do popup */
 .popup-content input {
     margin-bottom: 15px;
     padding: 10px;
@@ -166,8 +163,60 @@ td button:hover {
     background-color: #444;
 }
 
-/* Estilo para destacar a tarefa reordenada */
 .task-highlight {
     transition: background-color 0.3s;
     background-color: #cce5ff;
+}
+
+/* Responsividade para dispositivos menores */
+@media (max-width: 768px) {
+    #task-container {
+        width: 95%;
+        padding: 15px;
+    }
+
+    #taskTable th:nth-child(1),
+    #taskTable td:nth-child(1),
+    #taskTable th:nth-child(6),
+    #taskTable td:nth-child(6) {
+        display: none; /* Remove colunas menos importantes */
+    }
+
+    th, td {
+        font-size: 12px;
+        padding: 8px;
+    }
+
+    .form-fields {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .form-fields input {
+        width: 100%;
+    }
+
+    .popup-content {
+        width: 90%;
+        padding: 20px;
+    }
+
+    h1, h2 {
+        font-size: 18px;
+    }
+
+    button {
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 480px) {
+    th, td {
+        font-size: 10px;
+        padding: 5px;
+    }
+
+    #taskTable {
+        font-size: 10px;
+    }
 }
