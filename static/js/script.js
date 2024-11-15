@@ -1,11 +1,11 @@
-const backendUrl = "https://iamvitoria.pythonanywhere.com";
+const backendUrl = "https://iamvitoria.pythonanywhere.com";  // Definir a URL corretamente
 
 document.addEventListener('DOMContentLoaded', function () {
     let selectedTaskId = null;
 
     // Função para buscar as tarefas do servidor e exibi-las
     function fetchTasks() {
-        fetch(`${API_URL}/tasks`, {
+        fetch(`${backendUrl}/tasks`, {  // Troquei API_URL por backendUrl
           method: 'GET',
           headers: {
             'Content-Type': 'application/json'
@@ -82,7 +82,7 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
-        fetch(`${backendUrl}/tasks/${selectedTaskId}`, {
+        fetch(`${backendUrl}/tasks/${selectedTaskId}`, {  // Usando backendUrl aqui
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ nome, custo, data_limite: dataLimite })
@@ -98,7 +98,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Função para excluir uma tarefa
     window.deleteTask = function (taskId) {
         if (confirm('Você tem certeza que deseja excluir esta tarefa?')) {
-            fetch(`${backendUrl}/tasks/${taskId}`, {
+            fetch(`${backendUrl}/tasks/${taskId}`, {  // Usando backendUrl aqui
                 method: 'DELETE'
             })
             .then(response => {
@@ -114,7 +114,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Função para reordenar uma tarefa
     window.reorderTask = function(taskId, direction) {
-        fetch(`${backendUrl}/tasks/reorder/${taskId}/${direction}`, {
+        fetch(`${backendUrl}/tasks/reorder/${taskId}/${direction}`, {  // Usando backendUrl aqui
             method: 'POST'
         })
         .then(response => response.json())
@@ -133,7 +133,7 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
-        fetch(`${backendUrl}/tasks`, {
+        fetch(`${backendUrl}/tasks`, {  // Usando backendUrl aqui
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ nome, custo, data_limite: dataLimite })
