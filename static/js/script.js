@@ -1,9 +1,11 @@
+const backendUrl = "https://iamvitoria.pythonanywhere.com";
+
 document.addEventListener('DOMContentLoaded', function () {
     let selectedTaskId = null;
 
     // Função para buscar as tarefas do servidor e exibi-las
     function fetchTasks() {
-        fetch('/tasks')
+        fetch(`${backendUrl}/tasks`)
             .then(response => response.json())
             .then(data => renderTasks(data))
             .catch(error => {
@@ -29,12 +31,12 @@ document.addEventListener('DOMContentLoaded', function () {
     function renderTasks(tasks) {
         const taskList = document.getElementById('taskList');
         taskList.innerHTML = '';
-    
+
         tasks.forEach(task => {
             const row = document.createElement('tr');
             row.setAttribute('data-task-id', task.id); // Adiciona o ID da tarefa como atributo de dados
             if (task.custo >= 1000) row.classList.add('highlight'); // Destacar tarefas com custo maior ou igual a 1000
-    
+
             row.innerHTML = `
                 <td>${task.id}</td>
                 <td>${task.nome}</td>
@@ -51,12 +53,12 @@ document.addEventListener('DOMContentLoaded', function () {
             `;
             taskList.appendChild(row);
         });
-    }    
+    }
 
     // Função para editar uma tarefa
     window.editTask = function (taskId) {
         selectedTaskId = taskId;
-        fetch(`/tasks/${taskId}`)
+        fetch(`${backendUrl}/tasks/${taskId}`)
             .then(response => response.json())
             .then(data => {
                 document.getElementById('editNome').value = data.nome;
@@ -78,7 +80,7 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
-        fetch(`/tasks/${selectedTaskId}`, {
+        fetch(`${backendUrl}/tasks/${selectedTaskId}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ nome, custo, data_limite: dataLimite })
@@ -94,12 +96,11 @@ document.addEventListener('DOMContentLoaded', function () {
     // Função para excluir uma tarefa
     window.deleteTask = function (taskId) {
         if (confirm('Você tem certeza que deseja excluir esta tarefa?')) {
-            fetch(`/tasks/${taskId}`, {
+            fetch(`${backendUrl}/tasks/${taskId}`, {
                 method: 'DELETE'
             })
             .then(response => {
                 if (response.ok) {
-                    // Remover a tarefa do DOM imediatamente após a confirmação de exclusão
                     document.querySelector(`tr[data-task-id="${taskId}"]`).remove();
                 } else {
                     console.error('Erro ao excluir tarefa:', response.statusText);
@@ -111,13 +112,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Função para reordenar uma tarefa
     window.reorderTask = function(taskId, direction) {
-        fetch(`/tasks/reorder/${taskId}/${direction}`, {
+        fetch(`${backendUrl}/tasks/reorder/${taskId}/${direction}`, {
             method: 'POST'
         })
         .then(response => response.json())
         .then(() => fetchTasks())  // Recarrega a lista para atualizar a ordem
         .catch(error => console.error('Erro ao reordenar tarefa:', error));
-    };    
+    };
 
     // Função para incluir uma nova tarefa
     document.getElementById('saveTaskButton').addEventListener('click', function () {
@@ -130,7 +131,7 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
-        fetch('/tasks', {
+        fetch(`${backendUrl}/tasks`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ nome, custo, data_limite: dataLimite })
